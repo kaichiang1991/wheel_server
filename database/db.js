@@ -1,4 +1,5 @@
 const {MongoClient} = require('mongodb')
+const { getRandomResult } = require('./math')
 
 const uri = "mongodb+srv://kai:Chiang01@cluster0.mqe37.mongodb.net/Cluster0?retryWrites=true&w=majority"
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true })
@@ -51,6 +52,15 @@ async function writeDataTo(title, dataArr){
         // 建立新表格並插入資料
         db.collection(title).insertMany(dataArr)
     }
+}
+
+async function getResultData(title){
+    const dbName = 'wheel'
+    const db = client.db(dbName)
+    const dataArr = await db.collection(title).find({}).toArray()    
+    const result = getRandomResult(dataArr)
+    console.log('result', result)
+    return result
 }
 
 /**
@@ -112,5 +122,5 @@ async function getData(title){
 }
 
 module.exports = {
-    setData, updateData, getData, readDataByTitle, writeDataTo
+    setData, updateData, getData, readDataByTitle, writeDataTo, getResultData
 }
