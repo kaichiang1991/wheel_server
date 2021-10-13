@@ -54,38 +54,17 @@ async function writeDataTo(title, dataArr){
     }
 }
 
+/**
+ * 取得輪盤結果
+ * @param {*} title 
+ * @returns {string} 結果的名稱
+ */
 async function getResultData(title){
     const dbName = 'wheel'
     const db = client.db(dbName)
     const dataArr = await db.collection(title).find({}).toArray()    
     const result = getRandomResult(dataArr)
-    console.log('result', result)
     return result
-}
-
-/**
- * 將資料寫入資料庫
- * @param {*} title collection名稱
- * @param {*} itemArr 要記錄的品項
- */
-async function setData(title, itemArr){
-    const dbName = 'wheel'
-    const db = client.db(dbName)
-
-    // 先判斷是否存在，存在的話先從資料庫刪除
-    console.log(await db.listCollections({name: title}))
-    console.log('list done')
-    const exist = (await db.listCollections({name: title}).toArray()).length != 0
-    console.log('exist', exist)
-    if(exist){
-        await db.dropCollection(title)
-    }
-
-    console.log('drop donw')
-    const col = db.collection(title)
-    console.log('collection done')
-    const modItemArr = itemArr.map(item => ({name: item.item, count: +item.count}))
-    await col.insertMany(modItemArr)
 }
 
 /**
@@ -101,7 +80,8 @@ async function updateData(title, name){
     const updateObj = {
         $inc: {count: -1}
     }
-    await col.updateOne({name}, updateObj)
+    const result = await col.updateOne({name}, updateObj)
+    return result
 }
 
 /**
@@ -122,5 +102,5 @@ async function getData(title){
 }
 
 module.exports = {
-    setData, updateData, getData, readDataByTitle, writeDataTo, getResultData
+    updateData, getData, readDataByTitle, writeDataTo, getResultData
 }

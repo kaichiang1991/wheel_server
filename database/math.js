@@ -1,7 +1,5 @@
 const getRandomResult = (dataArr)=>{
-    console.log('get rendom result', dataArr)
     const totalCount = dataArr.reduce((pre, curr) => pre + curr.count, 0)
-    console.log('total count', totalCount)
     const index = Math.floor(Math.random() * totalCount)
     , key = dataArr.findIndex((data, idx) => 
         data.count > 0 &&
